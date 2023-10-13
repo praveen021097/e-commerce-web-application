@@ -1,8 +1,16 @@
 const express = require("express");
-const productController = require("./controllers/productController");
+const {register,login} = require("./controllers/auth.controller");
+const userValidationCredential = require("./utils/validation");
+const productRoute = require("./routes/product.route");
+const userRoute = require("./routes/user.route")
+const cookieParser = require("cookie-parser")
 const app = express();
 app.use(express.json());
-app.use("/products",productController);
+app.use(cookieParser())
+app.use("/api/v1",productRoute);
+app.use("/api/v1",userRoute);
+app.post("/api/v1/register",userValidationCredential,register);
+app.post ("/api/v1/login",login);
 //error middlewares
 
 module.exports = app;
