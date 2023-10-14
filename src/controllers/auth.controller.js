@@ -44,9 +44,9 @@ const login = async (req, res) => {
         if (!user) {
             return res.status(400).send({ message: "wrong email or user not exists !" })
         }
-        console.log("hihihi",req.body.password)
-        const match =await  user.checkPassword(req.body.password);
-       
+        
+        const match =   await  user.checkPassword(req.body.password);
+        console.log(match,"match")
         
         if (!match) {
             return res.status(400).send({ message: "wrong password!" })
