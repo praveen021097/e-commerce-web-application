@@ -22,7 +22,6 @@ exports.getAllProducts = async (req, res) => {
 // post products --Admin
 exports.createProduct = async (req, res, next) => {
     try {
-        console.log("fhgfghfh", req.user.id)
         req.body.userId = req.user.id;
         const product = (await Product.create(req.body));
         return res.status(201).send(product)
@@ -73,39 +72,41 @@ exports.createProductReview = async (req, res, next) => {
     try {
         const { rating, comment, productId } = req.body;
         const review = {
-            user: req.user._id,
+            userId: req.user._id,
             name: req.user.name,
             rating: Number(rating),
             comment,
         }
 
         const product = await Product.findById(productId);
-        const isReviewed = product.reviews.find((rev) => req.user.toString() === req.user._id.toString())
-
+        
+        const isReviewed = product.reviews.find((rev) => rev.userId.toString() === req.user._id.toString())
+        
         if (isReviewed) {
             product.reviews.forEach((rev) => {
-                if (req.user.toString() === req.user._id.toString()) {
-                    (rev.rating = rating), (rev.comment = comment)
+                if (rev.userId.toString() === req.user._id.toString()) {
+                    (rev.rating = rating), (rev.comment = comment);
                 }
-                else {
-                    product.reviews.push(review);
-                    product.numOfReviews = product.reviews.length;
-                }
+
             })
-
-            let avg = 0;
-            product.rating = product.reviews.forEach((rev) => {
-                avg += rev.rating;
-            }) / product.reviews.length;
-
-            await product.save({ validateBeforeSave: false });
-
-            return res.status(200).send({
-                success: true,
-                product
-            })
-
+        } else {
+            product.reviews.push(review);
+            product.numOfReviews = product.reviews.length;
         }
+
+        let avg = 0;
+        product.rating = product.reviews.forEach((rev) => {
+            avg += rev.rating;
+        }) / product.reviews.length;
+
+        await product.save({ validateBeforeSave: false });
+
+        return res.status(200).send({
+            success: true,
+            product
+        })
+
+
     } catch (err) {
         return res.status(500).send({
             message: 'something went wrong!'
@@ -117,12 +118,14 @@ exports.createProductReview = async (req, res, next) => {
 
 exports.getAllReviews = async (req, res, next) => {
     try {
-        const product = await Product.findById(req.query.id);
+        const product = await Product.findById(req.query.productId);
+  
         if (!product) {
             return res.status(404).send({ message: "product not found" });
 
         }
-        return re.status(200).send({
+       
+        return res.status(200).send({
             success: true,
             reviews: product.reviews,
         })
@@ -137,6 +140,7 @@ exports.getAllReviews = async (req, res, next) => {
 exports.deleteReview = async (req, res) => {
     try {
         const product = await Product.findById(req.query.productId);
+        console.log(product,req.query._id)
         if (!product) {
             return res.status(404).send({ message: "product not found" });
         }
@@ -154,7 +158,7 @@ exports.deleteReview = async (req, res) => {
             runValidators: true,
 
         })
-        return res.status(201).send({ success: true })
+        return res.status(201).send({ success: true ,message:"review deleted!"})
     } catch (err) {
         return res.status(500).send({ message: 'something went wrong!' })
     }

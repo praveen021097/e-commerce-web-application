@@ -64,11 +64,11 @@ exports.getSingleUser = async (req, res) => {
         return res.status(500).send({ err, message: "something went wrong" })
     }
 }
-
+// update user
 exports.updateUser = async (req, res) => {
     try {
         const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }).lean().exec();
-        return res.status(202).send(user)
+        return res.status(201).send(user)
     } catch (err) {
         return res.status(500).send({ err, message: "something went wrong" })
     }

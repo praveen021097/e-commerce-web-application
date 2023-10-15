@@ -21,7 +21,7 @@ const authenticate = async (req, res, next) => {
 
 
     if (!req.headers.authorization) {
-        console.log("hello")
+     
         return res.status(400).send({ message: "authorization token not found!" })
     }
     if (!req.headers.authorization.startsWith("Bearer ")) {
@@ -35,17 +35,16 @@ const authenticate = async (req, res, next) => {
         decoded = await verifyToken(token);
         
     } catch (err) {
-        return res.status(400).send({ message: "authentication token not found! 37" })
+        return res.status(400).send({ message: "authentication token not found! " })
     }
 
     req.user = await User.findById(decoded.id);
+    console.log("hi")
     return next()
 }
 
 const authorizeRole = (...roles)=>{
         return (req,res,next)=>{
-            console.log(roles)
-               console.log(req.user.role)
                 if(!roles.includes(req.user.role)){
                     return res.status(403).send({message:`Role ${req.user.role} is not allowed to access this resource!`})
                 }
