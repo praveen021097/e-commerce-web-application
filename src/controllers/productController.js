@@ -5,16 +5,19 @@ const router = express.Router();
 // get All Products
 exports.getAllProducts = async (req, res) => {
     try {
-        const resultPerPage = 5;
+        const resultPerPage = 8;
         const totalPages = Math.ceil((await Product.find().countDocuments()) / resultPerPage);
         const totalProducts = await Product.find().countDocuments();
         const apiFeature = new ApiFeatures(Product.find(), req.query).search().filter().pagination(resultPerPage);
-        const products = await apiFeature.query;
-        if (products.length == 0) {
+      
+        let products = await apiFeature.query;
+
+        let filterProductCount = products.length;
+        if (products.length === 0) {
             return res.status(200).send({ products, message: "no products" })
         }
-        // const products = await Product.find().lean().exec();
-        return res.status(200).send({ products, totalPages, totalProducts })
+      
+        return res.status(200).send({ products, totalPages, totalProducts, resultPerPage, filterProductCount })
     } catch (err) {
         return res.status(500).send({ message: "something went wrong!" })
     }
@@ -79,9 +82,9 @@ exports.createProductReview = async (req, res, next) => {
         }
 
         const product = await Product.findById(productId);
-        
+
         const isReviewed = product.reviews.find((rev) => rev.userId.toString() === req.user._id.toString())
-        
+
         if (isReviewed) {
             product.reviews.forEach((rev) => {
                 if (rev.userId.toString() === req.user._id.toString()) {
@@ -119,12 +122,12 @@ exports.createProductReview = async (req, res, next) => {
 exports.getAllReviews = async (req, res, next) => {
     try {
         const product = await Product.findById(req.query.productId);
-  
+
         if (!product) {
             return res.status(404).send({ message: "product not found" });
 
         }
-       
+
         return res.status(200).send({
             success: true,
             reviews: product.reviews,
@@ -140,12 +143,10 @@ exports.getAllReviews = async (req, res, next) => {
 exports.deleteReview = async (req, res) => {
     try {
         const product = await Product.findById(req.query.productId);
-        console.log(product,req.query._id)
         if (!product) {
             return res.status(404).send({ message: "product not found" });
         }
         const reviews = product.reviews.find((rev) => rev._id.toString() !== req.query.id.toString())
-
         let avg = 0;
         reviews.forEach((rev) => {
             avg += rev.rating;
@@ -158,7 +159,7 @@ exports.deleteReview = async (req, res) => {
             runValidators: true,
 
         })
-        return res.status(201).send({ success: true ,message:"review deleted!"})
+        return res.status(201).send({ success: true, message: "review deleted!" })
     } catch (err) {
         return res.status(500).send({ message: 'something went wrong!' })
     }

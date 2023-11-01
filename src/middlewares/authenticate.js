@@ -28,8 +28,8 @@ const authenticate = async (req, res, next) => {
         return res.status(400).send({ message: "authorization token not found!" })
     }
 
-    // const token = req.headers.authorization.trim().split(" ")[1];
- const {token} = req.cookies;
+    const token = req.headers.authorization.trim().split(" ")[1];
+//  const {token} = req.cookies;
     let decoded;
     try {
         decoded = await verifyToken(token);
@@ -39,7 +39,7 @@ const authenticate = async (req, res, next) => {
     }
 
     req.user = await User.findById(decoded.id);
-    console.log("hi")
+
     return next()
 }
 

@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator');
 const sendEmail = require("../utils/sendEmail")
 const crypto = require("crypto")
 const cloudinary = require("cloudinary");
+
 //get all users
 exports.getAllUsers = async (req, res, next) => {
     try {
@@ -99,14 +100,17 @@ exports.forgotPassword = async (req, res, next) => {
     }
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
-    const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
+   
+    const resetPasswordUrl = `${req.protocol}://${req.get("host")}/password/reset/${resetToken}`;
     const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nif you have not requested this mail please ignore it`
+    console.log("helloorgot",resetPasswordUrl)
     try {
         await sendEmail({
             email: user.email,
-            subject: "e-commerce password recovery ",
+            subject: "buyershub password recovery ",
             message: message
         })
+     
         return res.status(200).send({ message: `Email send to ${user.email} successfully!` })
     } catch (err) {
         user.resetPasswordToken = undefined;
@@ -155,7 +159,6 @@ exports.getUserDetails = async(req,res)=>{
     try {
         
         const user = await User.findOne({_id:req.user.id});
-        console.log("hi",user)
         return res.status(200).send({
             success:true,
             user,
@@ -201,24 +204,24 @@ exports.updateProfile = async (req, res, next) => {
             email: req.body.email,
           };
         
-          // if (req.body.avatar !== "") {
-          //   const user = await User.findById(req.user.id);
+          if (req.body.avatar !== "") {
+            const user = await User.findById(req.user.id);
         
-          //   const imageId = user.avatar.public_id;
+            const imageId = user.avatar.public_id;
         
-          //   await cloudinary.v2.uploader.destroy(imageId);
+            await cloudinary.v2.uploader.destroy(imageId);
         
-          //   const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-          //     folder: "avatars",
-          //     width: 150,
-          //     crop: "scale",
-          //   });
+            const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+              folder: "avatars",
+              width: 150,
+              crop: "scale",
+            });
         
-          //   newUserData.avatar = {
-          //     public_id: myCloud.public_id,
-          //     url: myCloud.secure_url,
-          //   };
-          // }
+            newUserData.avatar = {
+              public_id: myCloud.public_id,
+              url: myCloud.secure_url,
+            };
+          }
         
           const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
             new: true,
@@ -243,9 +246,7 @@ exports.updateProfile = async (req, res, next) => {
             email: req.body.email,
             role:req.body.role
           };
-        
-       
-        
+    
           const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
             new: true,
             runValidators: true,

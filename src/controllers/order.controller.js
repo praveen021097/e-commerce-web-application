@@ -27,7 +27,6 @@ exports.newOrder = async (req, res, next) => {
             userId:req.user._id
           
         })
-        console.log(order)
         return res.status(201).send({
             success: true,
             order
@@ -96,7 +95,6 @@ exports.updateOrderStatus = async (req, res, next) => {
     try {
 
         const order = await Order.find({_id:req.params.id}).lean().exec();
-       console.log(order)
         if (order.orderStatus === "Delivered") {
             return res.status(400).send({ message: "you have already delivered this order" })
         }
