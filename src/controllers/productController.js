@@ -22,6 +22,20 @@ exports.getAllProducts = async (req, res) => {
         return res.status(500).send({ message: "something went wrong!" })
     }
 };
+//get all products for admin
+exports.getAllAdminProducts = async (req, res) => {
+    try {
+        const products = await Product.find().lean().exec();
+
+        if (products.length === 0) {
+            return res.status(200).send({ products, message: "no products" })
+        }
+      
+        return res.status(200).send( products )
+    } catch (err) {
+        return res.status(500).send({ message: "something went wrong!" })
+    }
+};
 // post products --Admin
 exports.createProduct = async (req, res, next) => {
     try {
@@ -63,7 +77,7 @@ exports.deleteProduct = async (req, res, next) => {
     try {
 
         const product = await Product.findByIdAndDelete(req.params.id).lean().exec();
-        return res.status(200).send(product)
+        return res.status(200).send({isDeleted:true})
     } catch (err) {
         return res.status(500).send({ message: "something went wrong!" })
     }
