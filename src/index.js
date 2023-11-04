@@ -12,7 +12,8 @@ const fileUpload = require("express-fileupload");
 dotenv.config({path:"e-commerce-web-application-backend/env"})
 
 const app = express();
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+// app.use(express.urlencoded({limit: '50mb'}));
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(fileUpload())

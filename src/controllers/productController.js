@@ -2,6 +2,7 @@ const express = require("express");
 const Product = require("../models/product.model");
 const ApiFeatures = require("../utils/apifeatures");
 const router = express.Router();
+const cloudinary = require("cloudinary");
 // get All Products
 exports.getAllProducts = async (req, res) => {
     try {
@@ -39,9 +40,30 @@ exports.getAllAdminProducts = async (req, res) => {
 // post products --Admin
 exports.createProduct = async (req, res, next) => {
     try {
+        
+        let images = [];
+        if(typeof req.body.images === "string"){
+            images.push(req.body.images)
+        }
+        else{
+            images = req.body.images;
+        }
+        const imagesLinks = [];
+        let result ;
+        for(let i=0; i<images.length; i++){
+             result = await cloudinary.v2.uploader.upload(images[i],{
+                folder:"products",
+            })
+        };
+        imagesLinks.push({
+            public_id:result.public_id,
+            url: result.secure_url,
+        })
+        req.body.images = imagesLinks;
         req.body.userId = req.user.id;
-        const product = (await Product.create(req.body));
-        return res.status(201).send(product)
+        const product = await Product.create(req.body);
+        return res.status(201).send({success:true,
+        product,})
     } catch (err) {
         return res.status(500).send({ message: "something went wrong!" })
     }
@@ -77,6 +99,14 @@ exports.deleteProduct = async (req, res, next) => {
     try {
 
         const product = await Product.findByIdAndDelete(req.params.id).lean().exec();
+        if(!product){
+            return res.status(404).send({ message: "product not found !" })
+        }
+
+        //delete images from cloudinary
+        for (let i=0; product.images.length; i++){
+            await cloudinary.v2.uploader.destroy(product.images[i].public_id)
+        }
         return res.status(200).send({isDeleted:true})
     } catch (err) {
         return res.status(500).send({ message: "something went wrong!" })
