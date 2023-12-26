@@ -8,11 +8,11 @@ const { validationResult } = require('express-validator');
 const register = async (req, res) => {
 
     try {
-        
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar,{
-            folder:"avatars",
-            width:150,
-            crop:"scale",
+
+        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+            folder: "avatars",
+            width: 150,
+            crop: "scale",
         })
 
 
@@ -20,9 +20,9 @@ const register = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).send({ errors: errors.array() })
         }
-      const  {name,email,password} = req.body;
+        const { name, email, password } = req.body;
         let user = await User.findOne({ email: req.body.email });
-       
+
         if (user) {
             return res.status(400).send("user already exists!")
         }
@@ -31,19 +31,18 @@ const register = async (req, res) => {
             name,
             email,
             password,
-            avatar:{
-                public_id:myCloud.public_id,
-                url:myCloud.secure_url,
+            avatar: {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url,
             }
         });
-        const token =await user.generateToken()
-       
-       
-    return res.status(201).cookie('token', token, {expires:new Date(Date.now() + process.env.TOKEN_EXPIRE * 24 * 60 * 60 * 1000), httpOnly: true }).send({
-        success:true,
-        user,
-        token
-    })
+        const token = await user.generateToken()
+
+        return res.status(201).cookie('token', token, { expires: new Date(Date.now() + process.env.TOKEN_EXPIRE * 24 * 60 * 60 * 1000), httpOnly: true }).send({
+            success: true,
+            user,
+            token
+        })
     } catch (err) {
         return res.status(500).send({ message: "something went wrong!" })
     }
@@ -52,30 +51,30 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
 
-        const {email,password} = req.body;
-        if(!email || !password){
-            return res.status(400).send({message:"enter email and password !"})
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).send({ message: "enter email and password !" })
         }
         let user = await User.findOne({ email });
 
         if (!user) {
             return res.status(400).send({ message: "wrong email or user not exists !" })
         }
-        
-        const match =   await  user.checkPassword(req.body.password);
-        console.log(match,"match")
-        
+
+        const match = await user.checkPassword(req.body.password);
+
+
         if (!match) {
             return res.status(400).send({ message: "wrong password!" })
         }
-        const token =await  user.generateToken()
-       
-       
-    return res.status(201).cookie('token', token, {expires:new Date(Date.now() + process.env.TOKEN_EXPIRE * 24 * 60 * 60 * 1000), httpOnly: true }).send({
-        success:true,
-        user,
-        token
-    })
+        const token = await user.generateToken()
+
+
+        return res.status(201).cookie('token', token, { expires: new Date(Date.now() + process.env.TOKEN_EXPIRE * 24 * 60 * 60 * 1000), httpOnly: true }).send({
+            success: true,
+            user,
+            token
+        })
     } catch (err) {
         return res.status(500).send({ message: "something went wrong!" })
     }

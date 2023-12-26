@@ -65,7 +65,6 @@ exports.myOrders = async(req, res, next) => {
             orders,
         })
     } catch (err) {
-
         return res.status(500).send({ message: "something went wrong!" })
     }
 }
@@ -100,7 +99,6 @@ exports.updateOrderStatus = async (req, res, next) => {
         }
 
         order.orderItems.forEach(async (ord) => {
-            
             await updateStock(ord.product, order.quantity);
         })
         
@@ -122,7 +120,7 @@ exports.updateOrderStatus = async (req, res, next) => {
 
 async function updateStock(id, quantity){
     const product = await Product.findById(id);
-    product.stock -= quantity;
+    product.stocks -= quantity;
     await product.save({ validateBeforeSave: false })
 }
 
