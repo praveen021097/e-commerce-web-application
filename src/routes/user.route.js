@@ -12,5 +12,5 @@ router.route("/password/forgot").post(forgotPassword);
 router.route("/me").get(authenticate,getUserDetails);
 router.route("/password/update").put(authenticate,updatePassword)
 router.route("/me/update").put(authenticate,updateProfile)
-router.route("/admin/update/role").patch(authenticate,authorizeRole("admin"),updateUserRole)
+router.route("/admin/update/role/:id").patch(authenticate,authorizeRole("admin"),updateUserRole)
 module.exports = router;

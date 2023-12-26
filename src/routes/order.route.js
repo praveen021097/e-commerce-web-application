@@ -7,5 +7,6 @@ router.route("/order/new").post(authenticate,newOrder);
 router.route("/order/:id").get(authenticate,getSingleOrder)
 router.route("/orders/me").get(authenticate,myOrders);
 router.route("/admin/orders").get(authenticate,authorizeRole("admin"),getAllOrders);
-router.route("/admin/order/:id").put(authenticate,authorizeRole("admin"),updateOrderStatus).delete(authenticate,authorizeRole("admin"),deleteOrder);
+router.route("/admin/order/:id").put(authenticate,authorizeRole("admin"),updateOrderStatus);
+router.route("/admin/orders/:id").delete(authenticate,authorizeRole("admin"),deleteOrder);
 module.exports = router;
