@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model")
-require("dotenv").config();
+require("dotenv").config({path:"src/configs/config.env"});
 
 const verifyToken =(token) => {
 
@@ -19,9 +19,7 @@ const verifyToken =(token) => {
 
 const authenticate = async (req, res, next) => {
 
-
     if (!req.headers.authorization) {
-     
         return res.status(400).send({ message: "authorization token not found!" })
     }
     if (!req.headers.authorization.startsWith("Bearer ")) {
@@ -29,7 +27,7 @@ const authenticate = async (req, res, next) => {
     }
 
     const token = req.headers.authorization.trim().split(" ")[1];
-//  const {token} = req.cookies;
+
     let decoded;
     try {
         decoded = await verifyToken(token);
@@ -49,8 +47,6 @@ const authorizeRole = (...roles)=>{
                     return res.status(403).send({message:`Role ${req.user.role} is not allowed to access this resource!`})
                 }
               return  next();
-          
-
         }
 }
 module.exports = {authenticate,authorizeRole};

@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({path:"src/configs/config.env"});
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
  exports.processPayment = async(req,res)=>{

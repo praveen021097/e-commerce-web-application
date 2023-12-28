@@ -1,14 +1,13 @@
 const User = require("../models/user.model");
 const cloudinary = require("cloudinary");
 
-require("dotenv").config()
+require("dotenv").config({path:"src/configs/config.env"});
 const { validationResult } = require('express-validator');
 
 
 const register = async (req, res) => {
 
     try {
-
         const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
             folder: "avatars",
             width: 150,

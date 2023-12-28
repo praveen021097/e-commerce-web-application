@@ -1,7 +1,6 @@
 const express = require("express");
 const Product = require("../models/product.model");
 const ApiFeatures = require("../utils/apifeatures");
-const router = express.Router();
 const cloudinary = require("cloudinary");
 // get All Products
 exports.getAllProducts = async (req, res) => {
@@ -132,7 +131,6 @@ exports.deleteProduct = async (req, res, next) => {
     try {
 
         const product = await Product.findByIdAndDelete(req.params.id).lean().exec();
-        console.log("pros", product)
         if (!product) {
             return res.status(404).send({ message: "product not found !" })
         }
@@ -224,14 +222,17 @@ exports.deleteReview = async (req, res) => {
         if (!product) {
             return res.status(404).send({ message: "product not found" });
         }
+
         const reviews = product.reviews.find((rev) => rev._id.toString() !== req.query.id.toString())
+
         let avg = 0;
-        reviews.forEach((rev) => {
+        product.reviews.forEach((rev) => {
             avg += rev.rating;
         })
 
-        const ratings = avg / reviews.length;
-        const numOfReviews = reviews.length;
+        const ratings = avg / (product.reviews.length - 1);
+        const numOfReviews = product.reviews.length - 1;
+
         await Product.findByIdAndUpdate(req.query.productId, { reviews, rating: ratings, numOfReviews }, {
             new: true,
             runValidators: true,

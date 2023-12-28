@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken")
-require("dotenv").config()
+require("dotenv").config({path:"src/configs/config.env"});
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 // userSchema

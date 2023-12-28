@@ -15,31 +15,6 @@ exports.getAllUsers = async (req, res, next) => {
     }
 }
 
-// router.post("", body("name").not().isEmpty().isLength({ min: 4, max: 18 }).withMessage("name should not be less then 5 character"), body("email").isEmail().custom(async (value) => {
-//     const user = await User.findOne({ email: value });
-
-//     if (user) {
-//         throw new Error("email is already taken!")
-//     }
-// }), body("password").isLength({ min: 8 })
-//     .withMessage('Password must be at least 8 characters long')
-//     .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$/)
-//     .withMessage('Password must contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character'),
-//      async (req, res) => {
-//         try {
-
-//             const errors = validationResult(req);
-//             if (!errors.isEmpty()) {
-//                 return res.status(400).send({ errors: errors.array() })
-//             }
-
-//            const user = await User.create(req.body);
-//            console.log("hi")
-//             return res.status(201).send(user)
-//         } catch (err) {
-//             return res.status(500).send({ err, message: "something went wrong" })
-//         }
-//     })
 
 exports.deleteUser = async (req, res) => {
     try {
@@ -102,8 +77,8 @@ exports.forgotPassword = async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
    
     const resetPasswordUrl = `${req.protocol}://${req.get("host")}/password/reset/${resetToken}`;
-    const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nif you have not requested this mail please ignore it`
-    console.log("helloorgot",resetPasswordUrl)
+    const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nif you have not requested this mail please ignore it`;
+    
     try {
         await sendEmail({
             email: user.email,
