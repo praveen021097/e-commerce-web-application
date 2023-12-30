@@ -1,7 +1,7 @@
 const User = require("../models/user.model");
 const cloudinary = require("cloudinary");
 
-require("dotenv").config({path:"src/configs/config.env"});
+require("dotenv").config();
 const { validationResult } = require('express-validator');
 
 

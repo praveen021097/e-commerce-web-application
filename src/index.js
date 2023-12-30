@@ -1,7 +1,7 @@
 const express = require("express");
 const { register, login } = require("./controllers/auth.controller");
 const userValidationCredential = require("./utils/validation");
-const dotenv = require("dotenv");
+
 const productRoute = require("./routes/product.route");
 const userRoute = require("./routes/user.route");
 const orderRoute = require("./routes/order.route");
@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const cors = require('cors');
 
-dotenv.config({path:"src/configs/config.env"})
+require("dotenv").config();
 
 const app = express();
 const corsOptions ={

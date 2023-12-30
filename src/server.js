@@ -1,6 +1,6 @@
 const app = require("./index");
 const connect = require("./configs/db");
-require("dotenv").config({path:"src/configs/config.env"});
+require("dotenv").config();
 const cloudinary = require("cloudinary")
 
 app.listen(process.env.PORT, async()=>{
