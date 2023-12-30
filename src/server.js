@@ -10,11 +10,12 @@ process.on("uncaughtException", (err) => {
     process.exit(1);
   });
 
+  connect()
   // Config
 
 const server = app.listen(process.env.PORT, async()=>{
     try{
-        await connect();
+      
         cloudinary.config({
             cloud_name:process.env.CLOUDINARY_NAME,
             api_key:process.env.CLOUDINARY_API_KEY,
