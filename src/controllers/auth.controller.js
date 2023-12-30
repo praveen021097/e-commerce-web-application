@@ -43,7 +43,7 @@ const register = async (req, res) => {
             token
         })
     } catch (err) {
-        return res.status(500).send({ message: "something went wrong!" })
+        return res.status(500).send({ message: err.message })
     }
 }
 
@@ -62,7 +62,6 @@ const login = async (req, res) => {
 
         const match = await user.checkPassword(req.body.password);
 
-
         if (!match) {
             return res.status(400).send({ message: "wrong password!" })
         }
@@ -75,7 +74,7 @@ const login = async (req, res) => {
             token
         })
     } catch (err) {
-        return res.status(500).send({ message: "something went wrong!" })
+        return res.status(500).send({ message:err.message })
     }
 }
 module.exports = { register, login }
