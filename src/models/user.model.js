@@ -38,9 +38,8 @@ userSchema.pre("save",async function(next){
       return next()
 })
 
-userSchema.methods.checkPassword=async function(password){
-    console.log(password)
-    return bcrypt.compareSync(password,this.password);
+userSchema.methods.checkPassword = async function(password){
+    return await bcrypt.compare(password,this.password);
 }
 userSchema.methods.generateToken= function (){
     return jwt.sign({id:this._id},process.env.SECRET_KEY_TOKEN,{
