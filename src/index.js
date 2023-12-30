@@ -9,9 +9,17 @@ const paymentRoute = require("./routes/payment.route")
 const cookieParser = require("cookie-parser")
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
-dotenv.config({path:"e-commerce-web-application-backend/env"})
+const cors = require('cors');
+
+dotenv.config({path:"src/configs/config.env"})
 
 const app = express();
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,            
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 app.use(express.json({limit: '50mb'}));
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended:true}));
