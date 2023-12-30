@@ -42,7 +42,7 @@ userSchema.methods.checkPassword = async function(password){
     return await bcrypt.compare(password,this.password);
 }
 userSchema.methods.generateToken= function (){
-    return jwt.sign({id:this._id},process.env.SECRET_KEY_TOKEN,{
+    return jwt.sign({id:this._id},`${process.env.SECRET_KEY_TOKEN}`,{
         expiresIn:process.env.TOKEN_EXPIRE * 24 * 60 * 60 * 1000,
     });
 }
