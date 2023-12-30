@@ -20,7 +20,7 @@ const register = async (req, res) => {
             return res.status(400).send({ errors: errors.array() })
         }
         const { name, email, password } = req.body;
-        let user = await User.findOne({ email: req.body.email });
+        let user = await User.findOne({ email: req.body.email }).lean().exec();
 
         if (user) {
             return res.status(400).send("user already exists!")
@@ -54,7 +54,7 @@ const login = async (req, res) => {
         if (!email || !password) {
             return res.status(400).send({ message: "enter email and password !" })
         }
-        let user = await User.findOne({ email });
+        let user = await User.findOne({ email }).lean().exec();
 
         if (!user) {
             return res.status(400).send({ message: "wrong email or user not exists !" })
