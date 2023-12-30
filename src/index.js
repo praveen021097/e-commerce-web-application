@@ -13,7 +13,6 @@ dotenv.config({path:"e-commerce-web-application-backend/env"})
 
 const app = express();
 app.use(express.json({limit: '50mb'}));
-// app.use(express.urlencoded({limit: '50mb'}));
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(fileUpload())
@@ -24,7 +23,5 @@ app.use("/api/v1",paymentRoute)
 app.post("/api/v1/register", userValidationCredential, register);
 app.post("/api/v1/login", login);
 
-
-//error middlewares
 
 module.exports = app;
