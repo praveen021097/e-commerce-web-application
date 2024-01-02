@@ -23,7 +23,7 @@ app.use(cors());
 app.use(express.json({limit: '50mb'}));
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(fileUpload())
+app.use(fileUpload({useTempFiles: true}))
 app.use("/api/v1", productRoute);
 app.use("/api/v1", userRoute);
 app.use("/api/v1", orderRoute);

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const connect = () => {
-     mongoose.connect("mongodb+srv://praveen7523017052:king979398@cluster0.zvofn6n.mongodb.net/", {
+     mongoose.connect(process.env.MONGO_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
      
