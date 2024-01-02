@@ -2,7 +2,7 @@ const app = require("./index");
 const connect = require("./configs/db");
 require("dotenv").config();
 const cloudinary = require("cloudinary")
-
+const port =process.env.PORT || 5050
 // uncaught error
 process.on("uncaughtException", (err) => {
     console.log(`Error: ${err.message}`);
@@ -13,7 +13,7 @@ process.on("uncaughtException", (err) => {
   connect()
   // Config
 
-const server = app.listen(process.env.PORT, async()=>{
+const server = app.listen(port, async()=>{
     try{
       
         cloudinary.config({
@@ -21,7 +21,7 @@ const server = app.listen(process.env.PORT, async()=>{
             api_key:process.env.CLOUDINARY_API_KEY,
             api_secret:process.env.CLOUDINARY_API_SECRET
         })
-        console.log(`server is listening port ${process.env.PORT}`)
+        console.log(`server is listening port ${port}`)
     }catch(err){
         console.log(err)
     }
