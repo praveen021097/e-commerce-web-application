@@ -1,6 +1,7 @@
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+//processing payment
  exports.processPayment = async(req,res)=>{
     try {
         console.log("ji",process.env.STRIPE_SECRET_KEY)
@@ -23,6 +24,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
  }
 
+ //send stripe key
  exports.sendStripeApiKey = async(req,res)=>{
     try{
             res.status(200).send({stripeApiKey:process.env.STRIPE_API_KEY})

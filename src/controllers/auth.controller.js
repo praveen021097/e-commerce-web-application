@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary");
 require("dotenv").config();
 const { validationResult } = require('express-validator');
 
-
+// register user
 const register = async (req, res) => {
 
     try {
@@ -46,7 +46,7 @@ const register = async (req, res) => {
         return res.status(500).send({ message: err.message })
     }
 }
-
+//login user
 const login = async (req, res) => {
     try {
 
